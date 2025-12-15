@@ -24,6 +24,8 @@ return { -- Autoformat
       html = { "prettierd" },
       javascript = { "prettierd" },
       typescript = { "prettierd" },
+      svelte = { "prettierd" },
+
 
       --
       -- You can use a sub-list to tell conform to run *until* a formatter

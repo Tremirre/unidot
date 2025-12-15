@@ -5,6 +5,7 @@
     "lazyvim.plugins.extras.coding.yanky",
     "lazyvim.plugins.extras.editor.dial",
     "lazyvim.plugins.extras.editor.neo-tree",
+    "lazyvim.plugins.extras.formatting.prettier",
     "lazyvim.plugins.extras.lang.clangd",
     "lazyvim.plugins.extras.lang.go",
     "lazyvim.plugins.extras.lang.json",
@@ -16,6 +17,7 @@
     "lazyvim.plugins.extras.lang.toml",
     "lazyvim.plugins.extras.lang.typescript",
     "lazyvim.plugins.extras.lang.vue",
+    "lazyvim.plugins.extras.linting.eslint",
     "lazyvim.plugins.extras.util.mini-hipatterns"
   ],
   "install_version": 8,

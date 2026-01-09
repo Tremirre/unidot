@@ -1,0 +1,295 @@
+/* Kanagawa Dragon Theme for Walker
+ * The darker, more muted variant for late-night sessions
+ * Based on rebelot/kanagawa.nvim color palette (dragon variant)
+ */
+
+/* === Kanagawa Dragon Color Palette === */
+
+/* Background shades (dragonBlack) - deeper, warmer blacks */
+@define-color dragonBlack0 #0d0c0c;
+@define-color dragonBlack1 #12120f;
+@define-color dragonBlack2 #1D1C19;
+@define-color dragonBlack3 #181616;
+@define-color dragonBlack4 #282727;
+@define-color dragonBlack5 #393836;
+@define-color dragonBlack6 #625e5a;
+
+/* Foreground - slightly desaturated compared to wave */
+@define-color dragonWhite #c5c9c5;
+@define-color dragonGray #a6a69c;
+@define-color dragonGray2 #9e9b93;
+@define-color dragonGray3 #7a8382;
+@define-color dragonAsh #737c73;
+
+/* Accent colors - earthier, more muted */
+@define-color dragonBlue2 #8ba4b0;
+@define-color dragonViolet #8992a7;
+@define-color dragonTeal #949fb5;
+@define-color dragonAqua #8ea4a2;
+@define-color dragonGreen #87a987;
+@define-color dragonGreen2 #8a9a7b;
+@define-color dragonYellow #c4b28a;
+@define-color dragonOrange #b6927b;
+@define-color dragonOrange2 #b98d7b;
+@define-color dragonPink #a292a3;
+@define-color dragonRed #c4746e;
+
+/* Shared diagnostic colors */
+@define-color samuraiRed #E82424;
+@define-color autumnRed #C34043;
+@define-color roninYellow #FF9E3B;
+@define-color waveRed #E46876;
+@define-color peachRed #FF5D62;
+
+/* Selection backgrounds */
+@define-color waveBlue1 #223249;
+@define-color waveBlue2 #2D4F67;
+
+/* Reset */
+* {
+  all: unset;
+}
+
+/* Main window wrapper */
+.box-wrapper {
+  background: @dragonBlack3;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid @dragonBlack5;
+  box-shadow:
+    0 24px 48px rgba(13, 12, 12, 0.8),
+    0 0 0 1px alpha(@dragonBlack6, 0.2) inset;
+}
+
+/* Search input */
+.input {
+  background: @dragonBlack0;
+  color: @dragonWhite;
+  caret-color: @dragonOrange;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  border: 1px solid @dragonBlack5;
+  transition: all 150ms ease;
+}
+
+.input:focus {
+  border-color: alpha(@dragonOrange, 0.45);
+  box-shadow: 0 0 0 2px alpha(@dragonOrange, 0.1);
+}
+
+.input placeholder {
+  color: @dragonAsh;
+  opacity: 0.8;
+}
+
+/* Results list */
+.list {
+  color: @dragonWhite;
+  margin-top: 10px;
+}
+
+/* Individual items */
+.item-box {
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 1px 0;
+  transition: all 120ms ease;
+}
+
+child:hover .item-box {
+  background: alpha(@dragonBlack4, 0.7);
+}
+
+child:selected .item-box {
+  background: alpha(@dragonOrange, 0.12);
+  box-shadow: 0 0 0 1px alpha(@dragonOrange, 0.2) inset;
+}
+
+child:selected:hover .item-box {
+  background: alpha(@dragonOrange, 0.18);
+}
+
+/* Item text */
+.item-text {
+  font-size: 13px;
+  font-weight: 450;
+  color: @dragonWhite;
+}
+
+child:selected .item-text {
+  color: @dragonWhite;
+}
+
+.item-subtext {
+  font-size: 11px;
+  color: @dragonGray2;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+child:selected .item-subtext {
+  color: @dragonTeal;
+  opacity: 0.9;
+}
+
+/* Item icons */
+.item-image,
+.item-image-text {
+  margin-right: 10px;
+  opacity: 0.85;
+}
+
+child:selected .item-image,
+child:selected .item-image-text {
+  opacity: 1;
+}
+
+/* Quick activation labels */
+.item-quick-activation {
+  margin-left: auto;
+  padding: 4px 8px;
+  background: @dragonBlack4;
+  border: 1px solid @dragonBlack5;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: @dragonBlack6;
+  font-family: monospace;
+}
+
+child:selected .item-quick-activation {
+  background: alpha(@dragonOrange, 0.15);
+  border-color: alpha(@dragonOrange, 0.25);
+  color: @dragonOrange;
+}
+
+/* Placeholders */
+.placeholder,
+.elephant-hint {
+  color: @dragonAsh;
+  opacity: 0.6;
+  font-size: 13px;
+}
+
+/* Keybinds display */
+.keybinds-wrapper {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid @dragonBlack5;
+  font-size: 11px;
+  color: @dragonAsh;
+}
+
+.keybind {
+  padding: 4px 0;
+}
+
+.keybind-bind {
+  font-weight: 600;
+  font-family: monospace;
+  color: @dragonViolet;
+  text-transform: lowercase;
+}
+
+.keybind-label {
+  color: @dragonGray2;
+  opacity: 0.5;
+}
+
+/* Error display */
+.error {
+  padding: 12px 14px;
+  background: alpha(@samuraiRed, 0.12);
+  color: @dragonRed;
+  border-radius: 8px;
+  border: 1px solid alpha(@autumnRed, 0.35);
+  font-size: 13px;
+}
+
+/* Preview pane */
+.preview {
+  background: @dragonBlack0;
+  border: 1px solid @dragonBlack5;
+  padding: 14px;
+  border-radius: 10px;
+  color: @dragonWhite;
+  margin-left: 12px;
+}
+
+/* Calculator styling - use dragonYellow for results */
+.calc .item-text {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: @dragonYellow;
+}
+
+.calc .item-subtext {
+  color: @dragonGreen;
+  opacity: 0.8;
+}
+
+/* Symbols styling */
+.symbols .item-image-text {
+  font-size: 18px;
+}
+
+/* Todo styling */
+.todo.done .item-text {
+  opacity: 0.4;
+  text-decoration: line-through;
+  color: @dragonAsh;
+}
+
+.todo.urgent .item-text {
+  color: @dragonRed;
+}
+
+.todo.urgent .item-box {
+  border-left: 2px solid @autumnRed;
+}
+
+.todo.active .item-box {
+  border-left: 2px solid @dragonGreen;
+}
+
+/* Bluetooth styling */
+.bluetooth.disconnected {
+  opacity: 0.35;
+}
+
+/* Files styling */
+.files .item-subtext {
+  color: @dragonViolet;
+}
+
+/* Icon sizes */
+.normal-icons {
+  -gtk-icon-size: 16px;
+}
+
+.large-icons {
+  -gtk-icon-size: 32px;
+}
+
+/* Hide scrollbar for clean look */
+scrollbar {
+  opacity: 0;
+}
+
+/* Scroll container */
+.scroll {
+  margin-top: 6px;
+}
+
+/* Content container */
+.content-container {
+  margin-top: 8px;
+}
+
+/* Search container spacing */
+.search-container {
+  margin-bottom: 4px;
+}

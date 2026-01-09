@@ -1,0 +1,298 @@
+/* Kanagawa Theme for Walker
+ * Inspired by the famous painting "The Great Wave off Kanagawa" by Katsushika Hokusai
+ * Based on rebelot/kanagawa.nvim color palette (wave variant)
+ */
+
+/* === Kanagawa Color Palette === */
+
+/* Background shades (sumiInk) */
+@define-color sumiInk0 #16161D;
+@define-color sumiInk1 #1F1F28;
+@define-color sumiInk2 #2A2A37;
+@define-color sumiInk3 #363646;
+@define-color sumiInk4 #54546D;
+
+/* Foreground */
+@define-color fujiWhite #DCD7BA;
+@define-color oldWhite #C8C093;
+@define-color fujiGray #727169;
+
+/* Accent colors */
+@define-color waveBlue1 #223249;
+@define-color waveBlue2 #2D4F67;
+@define-color crystalBlue #7E9CD8;
+@define-color springBlue #7FB4CA;
+@define-color springViolet1 #938AA9;
+@define-color oniViolet #957FB8;
+@define-color springGreen #98BB6C;
+@define-color carpYellow #E6C384;
+@define-color surimiOrange #FFA066;
+@define-color waveAqua2 #7AA89F;
+@define-color sakuraPink #D27E99;
+
+/* Diagnostic / Status */
+@define-color samuraiRed #E82424;
+@define-color autumnRed #C34043;
+@define-color roninYellow #FF9E3B;
+@define-color waveRed #E46876;
+@define-color peachRed #FF5D62;
+
+/* Semantic mapping */
+@define-color window_bg_color @sumiInk1;
+@define-color surface_color @sumiInk0;
+@define-color accent_bg_color @crystalBlue;
+@define-color accent_dim_color @waveBlue2;
+@define-color theme_fg_color @fujiWhite;
+@define-color theme_fg_dim @fujiGray;
+@define-color error_bg_color @samuraiRed;
+@define-color error_fg_color @fujiWhite;
+@define-color border_color @sumiInk3;
+
+/* Reset */
+* {
+  all: unset;
+}
+
+/* Main window wrapper */
+.box-wrapper {
+  background: @sumiInk1;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid @sumiInk3;
+  box-shadow:
+    0 24px 48px rgba(22, 22, 29, 0.7),
+    0 0 0 1px alpha(@sumiInk4, 0.3) inset;
+}
+
+/* Search input */
+.input {
+  background: @sumiInk0;
+  color: @fujiWhite;
+  caret-color: @oniViolet;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  border: 1px solid @sumiInk3;
+  transition: all 150ms ease;
+}
+
+.input:focus {
+  border-color: alpha(@oniViolet, 0.5);
+  box-shadow: 0 0 0 2px alpha(@oniViolet, 0.12);
+}
+
+.input placeholder {
+  color: @fujiGray;
+  opacity: 0.7;
+}
+
+/* Results list */
+.list {
+  color: @fujiWhite;
+  margin-top: 10px;
+}
+
+/* Individual items */
+.item-box {
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin: 1px 0;
+  transition: all 120ms ease;
+}
+
+child:hover .item-box {
+  background: alpha(@sumiInk2, 0.6);
+}
+
+child:selected .item-box {
+  background: alpha(@oniViolet, 0.18);
+  box-shadow: 0 0 0 1px alpha(@oniViolet, 0.25) inset;
+}
+
+child:selected:hover .item-box {
+  background: alpha(@oniViolet, 0.25);
+}
+
+/* Item text */
+.item-text {
+  font-size: 13px;
+  font-weight: 450;
+  color: @fujiWhite;
+}
+
+child:selected .item-text {
+  color: @fujiWhite;
+}
+
+.item-subtext {
+  font-size: 11px;
+  color: @oldWhite;
+  opacity: 0.6;
+  margin-top: 1px;
+}
+
+child:selected .item-subtext {
+  color: @springViolet1;
+  opacity: 0.9;
+}
+
+/* Item icons */
+.item-image,
+.item-image-text {
+  margin-right: 10px;
+  opacity: 0.9;
+}
+
+child:selected .item-image,
+child:selected .item-image-text {
+  opacity: 1;
+}
+
+/* Quick activation labels */
+.item-quick-activation {
+  margin-left: auto;
+  padding: 4px 8px;
+  background: @sumiInk2;
+  border: 1px solid @sumiInk3;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 600;
+  color: @sumiInk4;
+  font-family: monospace;
+}
+
+child:selected .item-quick-activation {
+  background: alpha(@oniViolet, 0.2);
+  border-color: alpha(@oniViolet, 0.35);
+  color: @oniViolet;
+}
+
+/* Placeholders */
+.placeholder,
+.elephant-hint {
+  color: @fujiGray;
+  opacity: 0.6;
+  font-size: 13px;
+}
+
+/* Keybinds display */
+.keybinds-wrapper {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid @sumiInk3;
+  font-size: 11px;
+  color: @fujiGray;
+}
+
+.keybind {
+  padding: 4px 0;
+}
+
+.keybind-bind {
+  font-weight: 600;
+  font-family: monospace;
+  color: @springViolet1;
+  text-transform: lowercase;
+}
+
+.keybind-label {
+  color: @oldWhite;
+  opacity: 0.5;
+}
+
+/* Error display */
+.error {
+  padding: 12px 14px;
+  background: alpha(@samuraiRed, 0.15);
+  color: @waveRed;
+  border-radius: 8px;
+  border: 1px solid alpha(@autumnRed, 0.4);
+  font-size: 13px;
+}
+
+/* Preview pane */
+.preview {
+  background: @sumiInk0;
+  border: 1px solid @sumiInk3;
+  padding: 14px;
+  border-radius: 10px;
+  color: @fujiWhite;
+  margin-left: 12px;
+}
+
+/* Calculator styling - use carpYellow for results */
+.calc .item-text {
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: @carpYellow;
+}
+
+.calc .item-subtext {
+  color: @springGreen;
+  opacity: 0.8;
+}
+
+/* Symbols styling */
+.symbols .item-image-text {
+  font-size: 18px;
+}
+
+/* Todo styling */
+.todo.done .item-text {
+  opacity: 0.4;
+  text-decoration: line-through;
+  color: @fujiGray;
+}
+
+.todo.urgent .item-text {
+  color: @peachRed;
+}
+
+.todo.urgent .item-box {
+  border-left: 2px solid @samuraiRed;
+}
+
+.todo.active .item-box {
+  border-left: 2px solid @springGreen;
+}
+
+/* Bluetooth styling */
+.bluetooth.disconnected {
+  opacity: 0.35;
+}
+
+/* Files styling */
+.files .item-subtext {
+  color: @springViolet1;
+}
+
+/* Icon sizes */
+.normal-icons {
+  -gtk-icon-size: 16px;
+}
+
+.large-icons {
+  -gtk-icon-size: 32px;
+}
+
+/* Hide scrollbar for clean look */
+scrollbar {
+  opacity: 0;
+}
+
+/* Scroll container */
+.scroll {
+  margin-top: 6px;
+}
+
+/* Content container */
+.content-container {
+  margin-top: 8px;
+}
+
+/* Search container spacing */
+.search-container {
+  margin-bottom: 4px;
+}

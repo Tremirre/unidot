@@ -90,7 +90,7 @@
 /* Results list */
 .list {
   color: @fujiWhite;
-  margin-top: 10px;
+  margin-top: 4px;
 }
 
 /* Individual items */
@@ -284,15 +284,15 @@ scrollbar {
 
 /* Scroll container */
 .scroll {
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 /* Content container */
 .content-container {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 /* Search container spacing */
 .search-container {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }

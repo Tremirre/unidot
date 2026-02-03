@@ -4,54 +4,58 @@
   border: none;
   border-radius: 0;
   min-height: 0;
-  font-family: 'JetBrainsMono Nerd Font';
-  font-size: 12px;
+  font-family: "JetBrainsMono Nerd Font";
+  font-weight: bold;
+  font-size: 13px;
 }
 
 window#waybar {
   background: transparent;
-  color: @foreground;
+  color: #d4c4a0;
 }
 
-/* Pill styling for module sections */
-.modules-left,
+/* Pill styling - saturated dark purple variations */
+/* Left pill - darkest */
+.modules-left {
+  background-color: alpha(#1e1a30, 0.75);
+  border-radius: 4px;
+  margin: 4px 0 0 8px;
+  padding: 0 12px;
+}
+
+/* Center pill - base purple */
 .modules-center {
-  background-color: alpha(@background, 0.8);
-  border-radius: 8px;
+  background-color: alpha(#252038, 0.75);
+  border-radius: 4px;
   margin: 4px 0;
   padding: 0 12px;
 }
 
 .modules-right {
   background: transparent;
-  margin: 4px 0;
+  margin: 4px 8px 0 0;
 }
 
 /* Right side groups as separate pills */
-#system-stats,
-#connectivity {
-  background-color: alpha(@background, 0.8);
-  border-radius: 8px;
+/* System stats - slightly lighter */
+#system-stats {
+  background-color: alpha(#2c2640, 0.75);
+  border-radius: 4px;
   padding: 0 12px;
   margin: 0 4px;
 }
 
-.modules-left {
-  margin-left: 8px;
-}
-
-.modules-center {
-  /* Center pill has equal padding */
-}
-
-.modules-right {
-  background: transparent;
-  margin: 4px 8px 4px 0;
+/* Connectivity - lightest variation */
+#connectivity {
+  background-color: alpha(#332c48, 0.75);
+  border-radius: 4px;
+  padding: 0 12px;
+  margin: 0 4px;
 }
 
 #workspaces button {
   all: initial;
-  color: @foreground;
+  color: #d4c4a0;
   padding: 0 6px;
   margin: 0 1.5px;
   min-width: 9px;
@@ -97,7 +101,7 @@ tooltip {
 }
 
 tooltip label {
-  color: @foreground;
+  color: #d4c4a0;
 }
 
 #custom-update {

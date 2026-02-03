@@ -17,7 +17,7 @@ window#waybar {
 /* Pill styling - saturated dark purple variations */
 /* Left pill - darkest */
 .modules-left {
-  background-color: alpha(#1e1a30, 0.75);
+  background-color: alpha(#1e1a30, 0.45);
   border-radius: 4px;
   margin: 4px 0 0 8px;
   padding: 0 12px;
@@ -25,7 +25,7 @@ window#waybar {
 
 /* Center pill - base purple */
 .modules-center {
-  background-color: alpha(#252038, 0.75);
+  background-color: alpha(#252038, 0.45);
   border-radius: 4px;
   margin: 4px 0;
   padding: 0 12px;
@@ -39,7 +39,7 @@ window#waybar {
 /* Right side groups as separate pills */
 /* System stats - slightly lighter */
 #system-stats {
-  background-color: alpha(#2c2640, 0.75);
+  background-color: alpha(#2c2640, 0.45);
   border-radius: 4px;
   padding: 0 12px;
   margin: 0 4px;
@@ -47,7 +47,7 @@ window#waybar {
 
 /* Connectivity - lightest variation */
 #connectivity {
-  background-color: alpha(#332c48, 0.75);
+  background-color: alpha(#332c48, 0.45);
   border-radius: 4px;
   padding: 0 12px;
   margin: 0 4px;

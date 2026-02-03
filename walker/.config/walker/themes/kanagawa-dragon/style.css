@@ -54,7 +54,7 @@
 .box-wrapper {
   background: @dragonBlack3;
   padding: 20px;
-  border-radius: 16px;
+  border-radius: 4px;
   border: 1px solid @dragonBlack5;
   box-shadow:
     0 24px 48px rgba(13, 12, 12, 0.8),
@@ -67,7 +67,7 @@
   color: @dragonWhite;
   caret-color: @dragonOrange;
   padding: 10px 14px;
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 14px;
   font-weight: 400;
   border: 1px solid @dragonBlack5;
@@ -93,7 +93,7 @@
 /* Individual items */
 .item-box {
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: 4px;
   margin: 1px 0;
   transition: all 120ms ease;
 }
@@ -203,7 +203,7 @@ child:selected .item-quick-activation {
   padding: 12px 14px;
   background: alpha(@samuraiRed, 0.12);
   color: @dragonRed;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid alpha(@autumnRed, 0.35);
   font-size: 13px;
 }
@@ -213,7 +213,7 @@ child:selected .item-quick-activation {
   background: @dragonBlack0;
   border: 1px solid @dragonBlack5;
   padding: 14px;
-  border-radius: 10px;
+  border-radius: 4px;
   color: @dragonWhite;
   margin-left: 12px;
 }

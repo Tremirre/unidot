@@ -11,14 +11,34 @@
     "custom/voxtype",
     "custom/screenrecording-indicator",
   ],
-  "modules-right": [
-    "group/tray-expander",
-    "bluetooth",
-    "network",
-    "pulseaudio",
-    "cpu",
-    "battery",
-  ],
+  "modules-right": ["group/system-stats", "group/connectivity"],
+  "group/connectivity": {
+    "orientation": "inherit",
+    "modules": [
+      "group/tray-expander",
+      "bluetooth",
+      "network",
+      "pulseaudio",
+      "battery",
+    ],
+  },
+  "group/system-stats": {
+    "orientation": "inherit",
+    "modules": ["disk", "memory", "cpu"],
+  },
+  "disk": {
+    "interval": 30,
+    "format": "󰋊 {free}",
+    "path": "/",
+    "tooltip-format": "{used} used / {total} total",
+    "on-click": "$TERMINAL -e btop",
+  },
+  "memory": {
+    "interval": 10,
+    "format": "󰘚 {percentage}%",
+    "tooltip-format": "{used:0.1f}G / {total:0.1f}G",
+    "on-click": "$TERMINAL -e btop",
+  },
   "hyprland/workspaces": {
     "on-click": "activate",
     "format": "{icon}",
@@ -59,7 +79,7 @@
 
   "cpu": {
     "interval": 5,
-    "format": "󰍛",
+    "format": "󰍛 {usage}%",
     "on-click": "$TERMINAL -e btop",
   },
   "clock": {
@@ -81,15 +101,15 @@
     "on-click": "omarchy-launch-wifi",
   },
   "battery": {
-    "format": "{capacity}% {icon}",
-    "format-discharging": "{icon}",
-    "format-charging": "{icon}",
-    "format-plugged": "",
+    "format": "{icon} {capacity}%",
+    "format-discharging": "{icon} {capacity}%",
+    "format-charging": "{icon} {capacity}%",
+    "format-plugged": " {capacity}%",
     "format-icons": {
       "charging": ["󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"],
       "default": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
     },
-    "format-full": "󰂅",
+    "format-full": "󰂅 100%",
     "tooltip-format-discharging": "{power:>1.0f}W↓ {capacity}%",
     "tooltip-format-charging": "{power:>1.0f}W↑ {capacity}%",
     "interval": 5,

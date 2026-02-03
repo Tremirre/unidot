@@ -1,9 +1,6 @@
 @import "../omarchy/current/theme/waybar.css";
 
 * {
-  background-color: @background;
-  color: @foreground;
-
   border: none;
   border-radius: 0;
   min-height: 0;
@@ -11,16 +8,50 @@
   font-size: 12px;
 }
 
+window#waybar {
+  background: transparent;
+  color: @foreground;
+}
+
+/* Pill styling for module sections */
+.modules-left,
+.modules-center {
+  background-color: alpha(@background, 0.8);
+  border-radius: 8px;
+  margin: 4px 0;
+  padding: 0 12px;
+}
+
+.modules-right {
+  background: transparent;
+  margin: 4px 0;
+}
+
+/* Right side groups as separate pills */
+#system-stats,
+#connectivity {
+  background-color: alpha(@background, 0.8);
+  border-radius: 8px;
+  padding: 0 12px;
+  margin: 0 4px;
+}
+
 .modules-left {
   margin-left: 8px;
 }
 
+.modules-center {
+  /* Center pill has equal padding */
+}
+
 .modules-right {
-  margin-right: 8px;
+  background: transparent;
+  margin: 4px 8px 4px 0;
 }
 
 #workspaces button {
   all: initial;
+  color: @foreground;
   padding: 0 6px;
   margin: 0 1.5px;
   min-width: 9px;
@@ -31,33 +62,41 @@
 }
 
 #cpu,
+#memory,
+#disk,
 #battery,
 #pulseaudio,
 #custom-omarchy,
 #custom-screenrecording-indicator,
 #custom-update {
   min-width: 12px;
-  margin: 0 7.5px;
+  margin: 0 6px;
 }
 
 #tray {
-  margin-right: 16px;
+  margin-right: 10px;
 }
 
 #bluetooth {
-  margin-right: 17px;
+  margin: 0 6px;
 }
 
 #network {
-  margin-right: 13px;
+  margin: 0 6px;
 }
 
 #custom-expand-icon {
-  margin-right: 18px;
+  margin-right: 10px;
 }
 
 tooltip {
-  padding: 2px;
+  background-color: alpha(@background, 0.9);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+tooltip label {
+  color: @foreground;
 }
 
 #custom-update {
@@ -65,7 +104,7 @@ tooltip {
 }
 
 #clock {
-  margin-left: 5px;
+  margin: 0 4px;
 }
 
 .hidden {
@@ -74,7 +113,7 @@ tooltip {
 
 #custom-screenrecording-indicator {
   min-width: 12px;
-  margin-left: 5px;
+  margin-left: 4px;
   font-size: 10px;
   padding-bottom: 1px;
 }
@@ -85,7 +124,7 @@ tooltip {
 
 #custom-voxtype {
   min-width: 12px;
-  margin: 0 0 0 7.5px;
+  margin: 0 6px;
 }
 
 #custom-voxtype.recording {

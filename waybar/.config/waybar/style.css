@@ -64,6 +64,7 @@ window#waybar {
 #cpu,
 #memory,
 #disk,
+#custom-gpu,
 #battery,
 #pulseaudio,
 #custom-omarchy,

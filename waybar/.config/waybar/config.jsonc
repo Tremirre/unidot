@@ -24,7 +24,7 @@
   },
   "group/system-stats": {
     "orientation": "inherit",
-    "modules": ["disk", "memory", "cpu"],
+    "modules": ["disk", "memory", "cpu", "custom/gpu"],
   },
   "disk": {
     "interval": 30,
@@ -80,6 +80,13 @@
   "cpu": {
     "interval": 5,
     "format": "󰍛 {usage}%",
+    "on-click": "$TERMINAL -e btop",
+  },
+  "custom/gpu": {
+    "interval": 5,
+    "format": "󰢮 {}%",
+    "exec": "$HOME/.config/waybar/scripts/gpu-usage.sh",
+    "tooltip-format": "GPU Utilization",
     "on-click": "$TERMINAL -e btop",
   },
   "clock": {

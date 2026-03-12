@@ -20,11 +20,11 @@ return { -- Autoformat
 
       htmldjango = { "djlint" },
 
-      vue = { "prettierd" },
-      html = { "prettierd" },
-      javascript = { "prettierd" },
-      typescript = { "prettierd" },
-      svelte = { "prettierd" },
+      vue = { "prettierd", "prettier", stop_after_first = true },
+      html = { "prettierd", "prettier", stop_after_first = true },
+      javascript = { "prettierd", "prettier", stop_after_first = true },
+      typescript = { "prettierd", "prettier", stop_after_first = true },
+      svelte = { "prettierd", "prettier", stop_after_first = true },
 
 
       --

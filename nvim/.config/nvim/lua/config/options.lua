@@ -3,3 +3,4 @@
 -- Add any additional options here
 vim.opt.relativenumber = true
 vim.g.python3_host_prog = vim.env.NEOVIM_PYTHON_PATH or "python3.13"
+vim.g.lazyvim_eslint_auto_format = false

@@ -1,5 +1,5 @@
-# Dynamic theme colors
-config-file = ?"~/.config/omarchy/current/theme/ghostty.conf"
+# Terminal colors (cmux reads Ghostty config from ~/.config/ghostty/config)
+theme = Kanagawa Dragon
 
 # Font
 font-family = "JetBrainsMono NFM SemiBold"

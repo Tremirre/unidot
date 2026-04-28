@@ -189,3 +189,10 @@ on-mode-changed = []
     alt-shift-j = ['join-with down', 'mode main']
     alt-shift-k = ['join-with up', 'mode main']
     alt-shift-l = ['join-with right', 'mode main']
+
+# Float Ghostty's transient title-less windows (e.g. quick-terminal popups)
+# so they don't get tiled into the layout.
+[[on-window-detected]]
+if.app-id = 'com.mitchellh.ghostty'
+if.window-title-regex-substring = '^$'
+run = ['layout floating']

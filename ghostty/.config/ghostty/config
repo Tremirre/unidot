@@ -32,5 +32,44 @@ keybind = super+control+shift+alt+arrow_up=resize_split:up,100
 keybind = super+control+shift+alt+arrow_left=resize_split:left,100
 keybind = super+control+shift+alt+arrow_right=resize_split:right,100
 
+# cmux-style shortcuts for tmux (sends "C-a <key>" so tmux acts on its prefix
+# bindings without the user having to chord the leader first). Tmux prefix is
+# C-a (\x01); see ~/.config/tmux/tmux.conf for the matching bindings.
+
+# Splits
+keybind = super+d=text:\x01|
+keybind = super+shift+d=text:\x01-
+
+# Pane focus (Cmd+Opt+Arrows)
+keybind = super+alt+arrow_left=text:\x01h
+keybind = super+alt+arrow_right=text:\x01l
+keybind = super+alt+arrow_up=text:\x01k
+keybind = super+alt+arrow_down=text:\x01j
+
+# Open a new Ghostty tab (default Cmd+T is repurposed for tmux new-window below)
+keybind = super+n=new_tab
+
+# Close the current Ghostty tab (Cmd+W is taken by tmux kill-pane)
+keybind = super+shift+w=close_tab:this
+# Disable Cmd+Opt+W to avoid accidentally closing tabs
+keybind = super+alt+w=ignore
+
+# Spawn a new tmux session (sends C-a S, see tmux.conf)
+keybind = super+y=text:\x01S
+
+# Windows (cmux "surfaces")
+keybind = super+t=text:\x01c
+keybind = super+w=text:\x01x
+keybind = super+r=text:\x01,
+keybind = super+shift+bracket_right=text:\x01n
+keybind = super+shift+bracket_left=text:\x01p
+
+# Toggle pane zoom (Cmd+Shift+Enter)
+keybind = super+shift+enter=text:\x01z
+
+# Cmd+1..9 intentionally left to Ghostty's default goto_tab:N
+# (Ghostty tabs act as our "workspaces"; tmux windows are still
+# reachable via the leader prefix C-a 1..9.)
+
 # Slowdown mouse scrolling
 mouse-scroll-multiplier = 0.95

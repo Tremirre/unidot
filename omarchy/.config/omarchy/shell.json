@@ -66,11 +66,17 @@
     },
     "id": "barti.bar"
   },
-  "plugins": [],
+  "plugins": [
+    {
+      "id": "barti.notifications"
+    }
+  ],
   "disabledPlugins": [
-    "omarchy.menu"
+    "omarchy.menu",
+    "omarchy.notifications"
   ],
   "cloneSourceRestores": [
-    "barti.menu"
+    "barti.menu",
+    "barti.notifications"
   ]
 }

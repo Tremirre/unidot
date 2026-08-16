@@ -1,18 +1,15 @@
 --- a/Menu.qml
 +++ b/Menu.qml
-@@ -76,0 +77,5 @@
+@@ -76,0 +77,4 @@
 +  property int calculatorRevision: 0
 +  property string calculatorResult: ""
 +  property string calculatorError: ""
-+  property bool calculatorPending: false
 +  readonly property bool calculatorActive: !dmenuActive && filterText.trim().charAt(0) === "="
-@@ -151,0 +157,21 @@
+@@ -151,0 +156,18 @@
 +
 +  function updateCalculator() {
 +    calculatorRevision += 1
-+    calculatorResult = ""
 +    calculatorError = ""
-+    calculatorPending = false
 +    calculatorTimer.stop()
 +
 +    if (!root.calculatorActive) return
@@ -23,15 +20,14 @@
 +      return
 +    }
 +
-+    root.calculatorPending = true
 +    calculatorTimer.expression = expression
 +    calculatorTimer.revision = calculatorRevision
 +    calculatorTimer.restart()
 +  }
-@@ -585,1 +611,20 @@
+@@ -585,1 +607,20 @@
 -    if (query) {
 +    if (root.calculatorActive) {
-+      var calculatorLabel = root.calculatorPending ? "Calculating..." : (root.calculatorResult || root.calculatorError)
++      var calculatorLabel = root.calculatorResult || root.calculatorError
 +      rows.push({
 +        itemId: "calculator.result",
 +        kind: "calculation",
@@ -50,16 +46,16 @@
 +        section: ""
 +      })
 +    } else if (query) {
-@@ -687,0 +733,1 @@
+@@ -687,0 +729,1 @@
 +    root.updateCalculator()
-@@ -740,0 +787,6 @@
+@@ -740,0 +783,6 @@
 +    if (row.kind === "calculation") {
 +      if (!root.calculatorResult) return
 +      Quickshell.execDetached(["bash", "-c", "printf %s " + Util.shellQuote(root.calculatorResult) + " | wl-copy"])
 +      root.cancel()
 +      return
 +    }
-@@ -887,0 +940,34 @@
+@@ -887,0 +936,33 @@
 +  Timer {
 +    id: calculatorTimer
 +    interval: 150
@@ -81,7 +77,6 @@
 +    onExited: function(exitCode) {
 +      if (revision !== root.calculatorRevision) return
 +
-+      root.calculatorPending = false
 +      var result = String(calculatorStdout.text || "").trim()
 +      if (exitCode === 0 && result) {
 +        root.calculatorResult = result

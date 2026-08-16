@@ -46,6 +46,9 @@
 @@ -111,1 +118,1 @@
 -  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : ((root.activeMenu === "trigger.capture.screenrecord" || root.activeMenu === "style.font") ? Style.space(520) : Style.space(300)), panel.width - Style.gapsOut * 2)
 +  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : ((root.activeMenu === "trigger.capture.screenrecord" || root.activeMenu === "style.font") ? Style.space(520) : Style.space(420)), panel.width - Style.gapsOut * 2)
+@@ -159,1 +167,1 @@
+-    if (panel.maxRowsHeight >= 0) available = Math.min(available, panel.maxRowsHeight)
++    if (panel.maxRowsHeight >= 0 || root.activeMenu === "apps") available = Math.min(available, panel.maxRowsHeight >= 0 ? panel.maxRowsHeight : Style.space(360))
 @@ -182,1 +190,1 @@
 -    if (displayModel.count === 0) return root.baseRowHeight
 +    if (displayModel.count === 0) return root.emptyStateHeight

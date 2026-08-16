@@ -61,6 +61,11 @@ keybind = super+alt+arrow_left=text:\x01h
 keybind = super+alt+arrow_right=text:\x01l
 keybind = super+alt+arrow_up=text:\x01k
 keybind = super+alt+arrow_down=text:\x01j
+# Hyprland consumes Cmd+Opt+Arrows, then forwards this private bridge chord.
+keybind = super+control+alt+arrow_left=text:\x01h
+keybind = super+control+alt+arrow_right=text:\x01l
+keybind = super+control+alt+arrow_up=text:\x01k
+keybind = super+control+alt+arrow_down=text:\x01j
 
 # Open a new Ghostty tab (default Cmd+T is repurposed for tmux new-window below)
 keybind = super+n=new_tab

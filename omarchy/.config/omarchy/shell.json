@@ -69,14 +69,19 @@
   "plugins": [
     {
       "id": "barti.notifications"
+    },
+    {
+      "id": "barti.lock"
     }
   ],
   "disabledPlugins": [
     "omarchy.menu",
-    "omarchy.notifications"
+    "omarchy.notifications",
+    "omarchy.lock"
   ],
   "cloneSourceRestores": [
     "barti.menu",
-    "barti.notifications"
+    "barti.notifications",
+    "barti.lock"
   ]
 }

@@ -29,7 +29,7 @@ source "$OMARCHY_PATH/default/bash/rc"
   . /usr/share/bash-completion/bash_completion
 
 alias vv='source .venv/bin/activate'
-alias oc='opencode'
+alias oc='opencode --auto'
 
 export CUDA_HOME=/opt/cuda
 export PATH=$CUDA_HOME/bin:$PATH

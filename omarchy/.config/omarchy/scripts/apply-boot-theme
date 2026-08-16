@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+
+script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+logo="$script_dir/../assets/enso-mountain.png"
+plymouth_logo=/usr/share/plymouth/themes/omarchy/logo.png
+sddm_logo=/usr/share/sddm/themes/omarchy/logo.png
+
+if cmp -s "$logo" "$plymouth_logo" && cmp -s "$logo" "$sddm_logo"; then
+  exit 0
+fi
+
+omarchy plymouth set '#181616' '#c5c9c5' "$logo"

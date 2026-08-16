@@ -26,3 +26,5 @@ cp -a "${OMARCHY_PATH:-/usr/share/omarchy}/shell/plugins/menu"/. "$menu_dir"/
 cp -a "$plugin_root/barti.menu/manifest.json" "$menu_dir"/
 rm -f "$menu_dir/Menu.qml.orig" "$menu_dir/Menu.qml.rej"
 patch --batch --no-backup-if-mismatch -d "$menu_dir" -p1 < "$plugin_root/barti.menu/Menu.patch"
+
+"$plugin_root/../.config/omarchy/scripts/apply-lock-theme"

@@ -1,0 +1,15 @@
+--- a/LockView.qml
++++ b/LockView.qml
+@@ -121,0 +122,12 @@
++    Image {
++      width: Math.min(600, parent.width * 0.5)
++      height: width * 0.235
++      anchors.horizontalCenter: parent.horizontalCenter
++      anchors.bottom: inputField.top
++      anchors.bottomMargin: Style.space(6)
++      source: "../../assets/enso-mountain.png"
++      fillMode: Image.PreserveAspectFit
++      asynchronous: true
++      mipmap: true
++    }
++

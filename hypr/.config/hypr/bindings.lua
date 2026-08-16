@@ -17,7 +17,7 @@ o.bind("ALT + GRAVE", "Apps menu", "omarchy-menu toggle apps")
 o.bind("SUPER + SHIFT + Q", "Omawrite", { launch = "omawrite" })
 o.bind("SUPER + W", "Close tmux pane or window", function()
   local window = hl.get_active_window()
-  if window and window.class == "com.mitchellh.ghostty" then
+  if window and window.class == "com.mitchellh.ghostty" and (window.title or ""):match("^tmux:") then
     send_super_w_to_ghostty()
   else
     hl.dispatch(hl.dsp.window.close())

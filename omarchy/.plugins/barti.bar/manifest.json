@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "barti.bar",
+  "name": "Pill Bar",
+  "version": "1.0.0",
+  "author": "barti",
+  "description": "Omarchy bar with transparent gaps between rounded sections",
+  "kinds": ["bar"],
+  "entryPoints": { "bar": "Bar.qml" },
+  "omarchy": { "clonedFrom": "omarchy.bar" }
+}

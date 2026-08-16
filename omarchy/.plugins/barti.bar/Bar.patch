@@ -1,0 +1,66 @@
+--- a/Bar.qml
++++ b/Bar.qml
+@@ -15,1 +15,1 @@
+-  required property string omarchyPath
++  property string omarchyPath: ""
+@@ -17,1 +17,1 @@
+-  required property var barWidgetRegistry
++  property var barWidgetRegistry: null
+@@ -22,1 +22,1 @@
+-  required property var barConfig
++  property var barConfig: ({})
+@@ -69,4 +69,8 @@
+   property color barForeground: useTransparentForeground ? transparentForeground : themeForeground
+   property bool foregroundAnimationEnabled: true
+   property color background: Color.bar.background
++  property color pillBackground: Qt.rgba(background.r, background.g, background.b, 0.72)
++  property int pillEdgeMargin: Style.space(8)
++  property int pillPadding: Style.space(8)
++  property int pillInset: Style.space(4)
+   property color urgent: Color.bar.active
+@@ -1019,4 +1023,5 @@
+     implicitWidth: root.vertical ? root.barSize : 0
+     implicitHeight: root.vertical ? 0 : root.barSize
+-    color: root.transparent ? "transparent" : root.background
++    // Leave the panel transparent so spaces between pills reveal the desktop.
++    color: "transparent"
+     surfaceFormat.opaque: false
+@@ -1112,5 +1117,6 @@
+         LeftModules {
++          id: leftModules
+           anchors.left: parent.left
+-          anchors.leftMargin: Style.space(8)
++          anchors.leftMargin: root.pillEdgeMargin + root.pillPadding
+           anchors.verticalCenter: parent.verticalCenter
+         }
+@@ -1118,6 +1124,29 @@
+         RightModules {
++          id: rightModules
+           anchors.right: parent.right
+-          anchors.rightMargin: Style.space(8)
++          anchors.rightMargin: root.pillEdgeMargin + root.pillPadding
+           anchors.verticalCenter: parent.verticalCenter
+         }
++
++        Rectangle {
++          x: leftModules.x - root.pillPadding
++          y: root.pillInset
++          width: leftModules.width + root.pillPadding * 2
++          height: parent.height - root.pillInset * 2
++          color: root.pillBackground
++          radius: height / 2
++          visible: leftModules.visible
++          z: -1
++        }
++
++        Rectangle {
++          x: rightModules.x - root.pillPadding
++          y: root.pillInset
++          width: rightModules.width + root.pillPadding * 2
++          height: parent.height - root.pillInset * 2
++          color: root.pillBackground
++          radius: height / 2
++          visible: rightModules.visible
++          z: -1
++        }
+       }

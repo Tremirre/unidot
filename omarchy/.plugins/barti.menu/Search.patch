@@ -1,0 +1,155 @@
+--- a/Menu.qml
++++ b/Menu.qml
+@@ -80,0 +81,9 @@
++  property int externalSearchRevision: 0
++  property string externalSearchMode: ""
++  property var externalSearchRows: []
++  property string externalSearchError: ""
++  property bool externalSearchPending: false
++  readonly property bool fileSearchActive: !dmenuActive && filterText.trim().charAt(0) === "?"
++  readonly property bool clipboardSearchActive: !dmenuActive && filterText.trim().charAt(0) === "$"
++  readonly property bool externalSearchActive: fileSearchActive || clipboardSearchActive
++  readonly property string pluginDir: Quickshell.env("HOME") + "/.config/omarchy/plugins/barti.menu"
+@@ -174,0 +184,36 @@
++  function updateExternalSearch() {
++    externalSearchRevision += 1
++    externalSearchTimer.stop()
++
++    var mode = root.fileSearchActive ? "files" : (root.clipboardSearchActive ? "clipboard" : "")
++    if (mode !== root.externalSearchMode) {
++      root.externalSearchMode = mode
++      root.externalSearchRows = []
++    }
++
++    root.externalSearchError = ""
++    root.externalSearchPending = false
++    if (!mode) return
++
++    var query = root.filterText.trim().slice(1).trim()
++    if (mode === "files" && !query) {
++      root.externalSearchError = "Type a file name after ?"
++      return
++    }
++
++    root.externalSearchPending = true
++    externalSearchTimer.mode = mode
++    externalSearchTimer.query = query
++    externalSearchTimer.revision = externalSearchRevision
++    externalSearchTimer.restart()
++  }
++
++  function fileName(path) {
++    var parts = String(path || "").split("/")
++    return parts.length > 0 ? parts[parts.length - 1] : String(path || "")
++  }
++
++  function displayPath(path) {
++    var home = Quickshell.env("HOME")
++    return String(path || "").indexOf(home + "/") === 0 ? "~" + String(path).slice(home.length) : String(path || "")
++  }
+@@ -608,1 +653,44 @@
+-    if (root.calculatorActive) {
++    if (root.externalSearchActive) {
++      for (var externalIndex = 0; externalIndex < root.externalSearchRows.length; externalIndex++) {
++        var external = root.externalSearchRows[externalIndex]
++        var isFile = root.externalSearchMode === "files"
++        var value = isFile ? String(external || "") : String(external.index)
++        rows.push({
++          itemId: root.externalSearchMode + "." + externalIndex,
++          kind: isFile ? "file-search" : "clipboard-search",
++          icon: isFile ? "󰈙" : (external.type === "image" ? "󰋩" : "󰅌"),
++          iconFont: "",
++          appIcon: "",
++          appId: "",
++          label: isFile ? root.fileName(value) : String(external.label || ""),
++          target: isFile ? "file" : String(external.type || "text"),
++          detail: isFile ? root.displayPath(value) : String(external.detail || ""),
++          path: isFile ? value : String(external.path || ""),
++          childCount: 0,
++          action: value,
++          provider: isFile ? "" : String(external.mime || "text/plain"),
++          score: externalIndex,
++          section: ""
++        })
++      }
++
++      if (rows.length === 0) {
++        rows.push({
++          itemId: "external.status",
++          kind: "external-status",
++          icon: root.fileSearchActive ? "󰈙" : "󰅌",
++          iconFont: "",
++          appIcon: "",
++          appId: "",
++          label: root.externalSearchPending ? "Searching..." : (root.externalSearchError || "No matches"),
++          target: "",
++          detail: "",
++          path: "",
++          childCount: 0,
++          action: "",
++          provider: "",
++          score: 0,
++          section: ""
++        })
++      }
++    } else if (root.calculatorActive) {
+@@ -730,0 +819,1 @@
++    root.updateExternalSearch()
+@@ -783,0 +873,14 @@
++    if (row.kind === "external-status") return
++    if (row.kind === "file-search") {
++      Quickshell.execDetached(["uwsm", "app", "--", "xdg-open", row.action])
++      root.cancel()
++      return
++    }
++    if (row.kind === "clipboard-search") {
++      if (row.target === "image")
++        Quickshell.execDetached([root.omarchyPath + "/bin/omarchy-clipboard-paste-file", "--copy-only", row.provider, row.path])
++      else
++        Quickshell.execDetached([root.omarchyPath + "/bin/omarchy-clipboard-paste-text", "--copy-only", "--history-index", row.action])
++      root.cancel()
++      return
++    }
+@@ -950,0 +1054,42 @@
++  Timer {
++    id: externalSearchTimer
++    interval: 150
++    repeat: false
++    property string mode: ""
++    property string query: ""
++    property int revision: 0
++    onTriggered: {
++      if (externalSearchProc.running) externalSearchProc.running = false
++      externalSearchProc.command = [root.pluginDir + "/" + (mode === "files" ? "file-search.sh" : "clipboard-search.sh"), query]
++      externalSearchProc.revision = revision
++      externalSearchProc.running = true
++    }
++  }
++
++  Process {
++    id: externalSearchProc
++    property int revision: 0
++    stdout: StdioCollector { id: externalSearchStdout; waitForEnd: true }
++    onExited: function(exitCode) {
++      if (revision !== root.externalSearchRevision) return
++
++      root.externalSearchPending = false
++      if (exitCode !== 0) {
++        root.externalSearchRows = []
++        root.externalSearchError = "Search failed"
++        root.rebuildDisplay()
++        return
++      }
++
++      try {
++        var parsed = JSON.parse(String(externalSearchStdout.text || "[]"))
++        root.externalSearchRows = Array.isArray(parsed) ? parsed : []
++        root.externalSearchError = root.externalSearchRows.length > 0 ? "" : "No matches"
++      } catch (error) {
++        root.externalSearchRows = []
++        root.externalSearchError = "Search failed"
++      }
++      root.rebuildDisplay()
++    }
++  }
++

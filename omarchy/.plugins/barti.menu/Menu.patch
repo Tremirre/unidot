@@ -26,7 +26,7 @@
 +  property color selectedText: dragonWhite
 +  property color selectedBorder: Util.alpha(dragonOrange, 0.28)
 +  property var selectedBorderSpec: Border.flat(selectedBorder, 1)
-@@ -98,6 +105,6 @@
+@@ -98,6 +105,7 @@
 -  readonly property int cornerRadius: Style.cornerRadius
 -  property int contentMargin: Style.spacing.panelPadding
 -  property int headerHeight: Math.max(Style.space(34), Style.font.title + Style.spacing.controlPaddingY * 2)
@@ -39,32 +39,39 @@
 +  property int contentSpacing: Style.space(4)
 +  property int baseRowHeight: Style.space(36)
 +  property int detailRowHeight: Style.space(44)
++  property int emptyStateHeight: Style.space(96)
 @@ -107,1 +114,1 @@
 -  property int rowSpacing: Style.spacing.xs
 +  property int rowSpacing: Style.space(1)
 @@ -111,1 +118,1 @@
 -  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : ((root.activeMenu === "trigger.capture.screenrecord" || root.activeMenu === "style.font") ? Style.space(520) : Style.space(300)), panel.width - Style.gapsOut * 2)
 +  property int cardWidth: Math.min(root.dmenuActive ? Style.space(root.dmenuWidth) : ((root.activeMenu === "trigger.capture.screenrecord" || root.activeMenu === "style.font") ? Style.space(520) : Style.space(420)), panel.width - Style.gapsOut * 2)
-@@ -1151,1 +1158,3 @@
+@@ -182,1 +190,1 @@
+-    if (displayModel.count === 0) return root.baseRowHeight
++    if (displayModel.count === 0) return root.emptyStateHeight
+@@ -202,1 +210,1 @@
+-    if (displayModel.count === 0) return root.baseRowHeight
++    if (displayModel.count === 0) return root.emptyStateHeight
+@@ -1151,1 +1159,3 @@
 -          color: "transparent"
 +          color: root.dragonBlack0
 +          border.width: 1
 +          border.color: root.filterText ? Util.alpha(root.dragonOrange, 0.45) : root.dragonBlack5
-@@ -1153,3 +1162,5 @@
+@@ -1153,3 +1163,5 @@
              anchors.left: parent.left
 +            anchors.leftMargin: Style.space(14)
              anchors.right: parent.right
 +            anchors.rightMargin: Style.space(14)
              anchors.verticalCenter: parent.verticalCenter
-@@ -1159,1 +1170,1 @@
+@@ -1159,1 +1171,1 @@
 -            opacity: root.filterText ? 1 : 0.58
 +            opacity: root.filterText ? 1 : 0.72
-@@ -1161,1 +1172,1 @@
+@@ -1161,1 +1173,1 @@
 -            font.pixelSize: Style.font.heading
 +            font.pixelSize: Style.font.title
-@@ -1283,1 +1294,1 @@
+@@ -1283,1 +1295,1 @@
 -                  font.pixelSize: Style.font.heading
 +                  font.pixelSize: Style.font.title
-@@ -1323,1 +1334,1 @@
+@@ -1323,1 +1335,1 @@
 -                  font.pixelSize: Style.font.heading
 +                  font.pixelSize: Style.font.title

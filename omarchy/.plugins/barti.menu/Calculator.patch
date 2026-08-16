@@ -1,0 +1,96 @@
+--- a/Menu.qml
++++ b/Menu.qml
+@@ -76,0 +77,5 @@
++  property int calculatorRevision: 0
++  property string calculatorResult: ""
++  property string calculatorError: ""
++  property bool calculatorPending: false
++  readonly property bool calculatorActive: !dmenuActive && filterText.trim().charAt(0) === "="
+@@ -151,0 +157,21 @@
++
++  function updateCalculator() {
++    calculatorRevision += 1
++    calculatorResult = ""
++    calculatorError = ""
++    calculatorPending = false
++    calculatorTimer.stop()
++
++    if (!root.calculatorActive) return
++
++    var expression = root.filterText.trim().slice(1).trim()
++    if (!expression) {
++      root.calculatorError = "Type an expression after ="
++      return
++    }
++
++    root.calculatorPending = true
++    calculatorTimer.expression = expression
++    calculatorTimer.revision = calculatorRevision
++    calculatorTimer.restart()
++  }
+@@ -585,1 +611,20 @@
+-    if (query) {
++    if (root.calculatorActive) {
++      var calculatorLabel = root.calculatorPending ? "Calculating..." : (root.calculatorResult || root.calculatorError)
++      rows.push({
++        itemId: "calculator.result",
++        kind: "calculation",
++        icon: "󰃬",
++        iconFont: "",
++        appIcon: "",
++        appId: "",
++        label: calculatorLabel,
++        target: "",
++        detail: root.calculatorResult ? "Press Enter to copy" : "",
++        path: "",
++        childCount: 0,
++        action: "",
++        provider: "",
++        score: 0,
++        section: ""
++      })
++    } else if (query) {
+@@ -687,0 +733,1 @@
++    root.updateCalculator()
+@@ -740,0 +787,6 @@
++    if (row.kind === "calculation") {
++      if (!root.calculatorResult) return
++      Quickshell.execDetached(["bash", "-c", "printf %s " + Util.shellQuote(root.calculatorResult) + " | wl-copy"])
++      root.cancel()
++      return
++    }
+@@ -887,0 +940,34 @@
++  Timer {
++    id: calculatorTimer
++    interval: 150
++    repeat: false
++    property string expression: ""
++    property int revision: 0
++    onTriggered: {
++      if (calculatorProc.running) calculatorProc.running = false
++      calculatorProc.command = ["qalc", "-t", "--", expression]
++      calculatorProc.revision = revision
++      calculatorProc.running = true
++    }
++  }
++
++  Process {
++    id: calculatorProc
++    property int revision: 0
++    stdout: StdioCollector { id: calculatorStdout; waitForEnd: true }
++    onExited: function(exitCode) {
++      if (revision !== root.calculatorRevision) return
++
++      root.calculatorPending = false
++      var result = String(calculatorStdout.text || "").trim()
++      if (exitCode === 0 && result) {
++        root.calculatorResult = result
++        root.calculatorError = ""
++      } else {
++        root.calculatorResult = ""
++        root.calculatorError = "Invalid expression"
++      }
++      root.rebuildDisplay()
++    }
++  }
++

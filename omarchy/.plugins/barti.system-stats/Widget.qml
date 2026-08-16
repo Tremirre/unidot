@@ -29,7 +29,7 @@ BarWidget {
 
   Process {
     id: statsProcess
-    command: ["bash", "-c", "cpu=$(LC_ALL=C top -bn1 | awk '/^%Cpu/ { printf \"%.0f%%\", 100 - $8 }'); mem=$(free | awk '/^Mem:/ { printf \"%d%%\", $3 * 100 / $2 }'); disk=$(df -h / | awk 'NR==2 { print $4 }'); gpu=$(for p in /sys/class/drm/card*/device/gpu_busy_percent; do [ -r \"$p\" ] && cat \"$p\" && break; done); if [ -n \"$gpu\" ]; then gpu=\"${gpu}%\"; else gpu=N/A; fi; printf '%s|%s|%s|%s\\n' \"$cpu\" \"$mem\" \"$disk\" \"$gpu\""]
+    command: ["bash", "-c", "cpu=$(LC_ALL=C top -bn1 | awk '/^%Cpu/ { printf \"%.0f%%\", 100 - $8 }'); mem=$(free | awk '/^Mem:/ { printf \"%d%%\", $3 * 100 / $2 }'); disk=$(df -h / | awk 'NR==2 { print $4 }'); gpu=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null | awk '$1 ~ /^[0-9]+$/ { if (!found || $1 > max) max=$1; found=1 } END { if (found) print max }'); if [ -z \"$gpu\" ]; then gpu=$(for p in /sys/class/drm/card*/device/gpu_busy_percent; do [ -r \"$p\" ] && cat \"$p\" && break; done); fi; if [ -n \"$gpu\" ]; then gpu=\"${gpu}%\"; else gpu=N/A; fi; printf '%s|%s|%s|%s\\n' \"$cpu\" \"$mem\" \"$disk\" \"$gpu\""]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {

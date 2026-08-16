@@ -1,0 +1,15 @@
+[font]
+base-size = 14
+
+[lock]
+background = "#181616"
+background-alpha = 0.88
+text = "#c5c9c5"
+placeholder = "#737c73"
+text-error = "#c4746e"
+border = "#393836"
+border-active = "#b6927b"
+border-error = "#c4746e"
+border-alpha = 1.0
+selection = "#b6927b"
+selection-alpha = 0.45

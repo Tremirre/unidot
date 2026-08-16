@@ -14,4 +14,7 @@ for dir in */; do
     stow "$pkg"
 done
 
+# Omarchy validates plugin folders as real files, not symlinks.
+"$DOTFILES_DIR/omarchy/.plugins/install.sh"
+
 echo "Done!"

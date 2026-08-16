@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "barti.system-stats",
+  "name": "System stats",
+  "version": "1.0.0",
+  "author": "barti",
+  "description": "CPU, memory, disk, and GPU utilization in the Omarchy bar",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "Widget.qml" },
+  "barWidget": {
+    "displayName": "System stats",
+    "description": "CPU, memory, disk, and GPU utilization",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

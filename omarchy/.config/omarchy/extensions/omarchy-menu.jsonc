@@ -1,0 +1,9 @@
+{
+  "runner": { "icon": "", "label": "Search" },
+  "runner.apps": { "icon": "󰀻", "label": "Applications", "target": "apps" },
+  "runner.files": { "icon": "󰈙", "label": "Files", "action": "omarchy menu file 'Open file' \"$HOME\" ''" },
+  "runner.clipboard": { "icon": "󰅌", "label": "Clipboard", "action": "omarchy menu clipboard" },
+  "runner.emoji": { "icon": "󰞅", "label": "Emoji", "action": "omarchy menu emoji" },
+  "runner.web": { "icon": "󰖟", "label": "Web Search", "action": "query=$(omarchy menu input 'Search web') && [ -n \"$query\" ] && xdg-open \"https://www.google.com/search?q=$(printf %s \"$query\" | jq -sRr @uri)\"" },
+  "runner.calculator": { "icon": "󰃬", "label": "Calculator", "action": "uwsm app -- gnome-calculator" }
+}

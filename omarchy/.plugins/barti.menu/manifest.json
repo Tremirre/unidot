@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "barti.menu",
+  "name": "Dragon Menu",
+  "version": "1.0.0",
+  "author": "barti",
+  "description": "Omarchy menu styled after the former Kanagawa Dragon Walker theme",
+  "kinds": ["menu", "bar-widget"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "menu": "Menu.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Dragon Menu",
+    "description": "Launches the Omarchy menu",
+    "category": "Compositor",
+    "allowMultiple": false
+  },
+  "omarchy": { "clonedFrom": "omarchy.menu" }
+}

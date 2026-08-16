@@ -11,7 +11,7 @@
     "layout": {
       "left": [
         {
-          "id": "omarchy.menu"
+          "id": "barti.menu"
         },
         {
           "id": "omarchy.workspaces"
@@ -66,5 +66,11 @@
     },
     "id": "barti.bar"
   },
-  "plugins": []
+  "plugins": [],
+  "disabledPlugins": [
+    "omarchy.menu"
+  ],
+  "cloneSourceRestores": [
+    "barti.menu"
+  ]
 }

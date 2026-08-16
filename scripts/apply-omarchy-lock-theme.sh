@@ -2,8 +2,8 @@
 set -euo pipefail
 
 script_path="$(readlink -f "${BASH_SOURCE[0]}")"
-package_dir="$(cd "$(dirname "$script_path")/../../.." && pwd)"
-plugin_source="$package_dir/.plugins/barti.lock"
+repo_dir="$(cd "$(dirname "$script_path")/.." && pwd)"
+plugin_source="$repo_dir/omarchy/.plugins/barti.lock"
 plugin_target="$HOME/.config/omarchy/plugins/barti.lock"
 
 mkdir -p "$plugin_target"

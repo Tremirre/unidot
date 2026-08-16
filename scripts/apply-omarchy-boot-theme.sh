@@ -2,7 +2,7 @@
 set -euo pipefail
 
 script_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
-logo="$script_dir/../assets/enso-mountain.png"
+logo="$script_dir/../omarchy/.config/omarchy/assets/enso-mountain.png"
 plymouth_logo=/usr/share/plymouth/themes/omarchy/logo.png
 sddm_logo=/usr/share/sddm/themes/omarchy/logo.png
 

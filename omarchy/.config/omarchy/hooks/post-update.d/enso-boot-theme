@@ -1,4 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-"$HOME/.config/omarchy/scripts/apply-boot-theme"
+hook_path="$(readlink -f "${BASH_SOURCE[0]}")"
+repo_dir="$(git -C "$(dirname "$hook_path")" rev-parse --show-toplevel)"
+
+"$repo_dir/scripts/apply-omarchy-boot-theme.sh"

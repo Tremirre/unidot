@@ -10,6 +10,7 @@ for dir in */; do
     [[ -d "$dir" ]] || continue
     
     pkg="${dir%/}"
+    [[ "$pkg" == "scripts" ]] && continue
     echo "Stowing $pkg..."
     stow "$pkg"
 done

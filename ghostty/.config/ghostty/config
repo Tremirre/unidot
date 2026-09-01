@@ -38,12 +38,22 @@ keybind = super+control+shift+alt+arrow_right=resize_split:right,100
 # Super is reserved for Hyprland workspaces, so Ctrl switches Ghostty tabs.
 keybind = ctrl+shift+bracket_right=next_tab
 keybind = ctrl+shift+bracket_left=previous_tab
+# Send Ctrl+1..9 to Herdr instead of switching outer Ghostty tabs.
+keybind = ctrl+1=text:\x011
+keybind = ctrl+2=text:\x012
+keybind = ctrl+3=text:\x013
+keybind = ctrl+4=text:\x014
+keybind = ctrl+5=text:\x015
+keybind = ctrl+6=text:\x016
+keybind = ctrl+7=text:\x017
+keybind = ctrl+8=text:\x018
+keybind = ctrl+9=text:\x019
 
 # cmux-style shortcuts for Herdr. They send "C-a <key>" so Herdr receives its
 # prefix binding without requiring a separate leader chord. See the Herdr config.
 
 # Splits
-keybind = super+d=text:\x01`
+keybind = super+d=text:\x01f
 keybind = super+shift+d=text:\x01-
 
 # Pane focus (Cmd+Opt+Arrows)

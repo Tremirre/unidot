@@ -81,7 +81,7 @@ o.bind("SUPER + W", "Close Herdr/tmux pane or window", function()
 end)
 o.bind("SUPER + D", "Split Herdr pane", function()
   if active_window_is_herdr_ghostty() then
-    send_herdr_key("GRAVE")
+    send_herdr_key("F")
   elseif active_window_is_tmux_ghostty() then
     send_key_to_ghostty("SUPER", "D")
   end

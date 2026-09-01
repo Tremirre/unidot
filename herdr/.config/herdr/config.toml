@@ -29,7 +29,7 @@ copy_mode = "prefix+v"
 
 # Panes. Herdr names side-by-side splits "vertical" and stacked splits "horizontal".
 split_horizontal = ["prefix+minus", "alt+shift+enter"]
-split_vertical = ["prefix+backtick", "alt+enter"]
+split_vertical = ["prefix+f", "alt+enter"]
 close_pane = ["prefix+x", "alt+esc"]
 zoom = "prefix+z"
 last_pane = "prefix+;"

@@ -38,22 +38,12 @@ keybind = super+control+shift+alt+arrow_right=resize_split:right,100
 # Super is reserved for Hyprland workspaces, so Ctrl switches Ghostty tabs.
 keybind = ctrl+shift+bracket_right=next_tab
 keybind = ctrl+shift+bracket_left=previous_tab
-keybind = ctrl+1=goto_tab:1
-keybind = ctrl+2=goto_tab:2
-keybind = ctrl+3=goto_tab:3
-keybind = ctrl+4=goto_tab:4
-keybind = ctrl+5=goto_tab:5
-keybind = ctrl+6=goto_tab:6
-keybind = ctrl+7=goto_tab:7
-keybind = ctrl+8=goto_tab:8
-keybind = ctrl+9=goto_tab:9
 
-# cmux-style shortcuts for tmux (sends "C-a <key>" so tmux acts on its prefix
-# bindings without the user having to chord the leader first). Tmux prefix is
-# C-a (\x01); see ~/.config/tmux/tmux.conf for the matching bindings.
+# cmux-style shortcuts for Herdr. They send "C-a <key>" so Herdr receives its
+# prefix binding without requiring a separate leader chord. See the Herdr config.
 
 # Splits
-keybind = super+d=text:\x01|
+keybind = super+d=text:\x01V
 keybind = super+shift+d=text:\x01-
 
 # Pane focus (Cmd+Opt+Arrows)
@@ -75,10 +65,10 @@ keybind = super+shift+w=close_tab:this
 # Disable Cmd+Opt+W to avoid accidentally closing tabs
 keybind = super+alt+w=ignore
 
-# Spawn a new tmux session (sends C-a S, see tmux.conf)
+# Spawn a new Herdr workspace (sends C-a S)
 keybind = super+y=text:\x01S
 
-# Windows (cmux "surfaces")
+# Tabs (Herdr's equivalent of tmux windows)
 keybind = super+t=text:\x01c
 keybind = super+w=text:\x01x
 keybind = super+r=text:\x01,
@@ -88,9 +78,8 @@ keybind = super+shift+bracket_left=text:\x01p
 # Toggle pane zoom (Cmd+Shift+Enter)
 keybind = super+shift+enter=text:\x01z
 
-# Cmd+1..9 intentionally left to Ghostty's default goto_tab:N
-# (Ghostty tabs act as our "workspaces"; tmux windows are still
-# reachable via the leader prefix C-a 1..9.)
+# Cmd+1..9 intentionally remain Ghostty's default goto_tab:N.
+# Herdr tabs remain reachable with the leader prefix C-a 1..9.
 
 # Slowdown mouse scrolling
 mouse-scroll-multiplier = 0.95

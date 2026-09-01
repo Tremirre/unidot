@@ -76,6 +76,7 @@ keybind = super+y=text:\x01S
 keybind = super+t=text:\x01c
 keybind = super+w=text:\x01x
 keybind = super+r=text:\x01,
+keybind = super+shift+r=text:\x01y
 keybind = super+shift+bracket_right=text:\x01n
 keybind = super+shift+bracket_left=text:\x01p
 

@@ -57,6 +57,7 @@ hl.unbind("SUPER + ALT + UP")
 hl.unbind("SUPER + ALT + DOWN")
 hl.unbind("SUPER + SHIFT + UP")
 hl.unbind("SUPER + SHIFT + DOWN")
+hl.unbind("SUPER + SHIFT + R")
 o.bind("SUPER + GRAVE", "Omarchy menu", "omarchy menu")
 o.bind("ALT + GRAVE", "Apps menu", "omarchy-menu toggle apps")
 o.bind("SUPER + SHIFT + Q", "Omawrite", { launch = "omawrite" })
@@ -80,9 +81,14 @@ o.bind("SUPER + W", "Close Herdr/tmux pane or window", function()
 end)
 o.bind("SUPER + D", "Split Herdr pane", function()
   if active_window_is_herdr_ghostty() then
-    send_herdr_key("backtick")
+    send_herdr_key("GRAVE")
   elseif active_window_is_tmux_ghostty() then
     send_key_to_ghostty("SUPER", "D")
+  end
+end)
+o.bind("SUPER + SHIFT + R", "Rename Herdr workspace", function()
+  if active_window_is_herdr_ghostty() then
+    send_herdr_key("y")
   end
 end)
 o.bind("SUPER + ALT + LEFT", "Focus Herdr/tmux pane left", multiplexer_pane_or_group_move("LEFT", "l"))

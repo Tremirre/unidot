@@ -89,6 +89,11 @@ keybind = super+r=text:\x01,
 keybind = super+shift+r=text:\x01y
 keybind = super+shift+bracket_right=text:\x01n
 keybind = super+shift+bracket_left=text:\x01p
+keybind = super+shift+arrow_right=text:\x01n
+keybind = super+shift+arrow_left=text:\x01p
+# Hyprland consumes Cmd+Shift+Arrows, then forwards this private bridge chord.
+keybind = super+control+shift+arrow_right=text:\x01n
+keybind = super+control+shift+arrow_left=text:\x01p
 
 # Toggle pane zoom (Cmd+Shift+Enter)
 keybind = super+shift+enter=text:\x01z

@@ -57,6 +57,8 @@ hl.unbind("SUPER + ALT + UP")
 hl.unbind("SUPER + ALT + DOWN")
 hl.unbind("SUPER + SHIFT + UP")
 hl.unbind("SUPER + SHIFT + DOWN")
+hl.unbind("SUPER + SHIFT + LEFT")
+hl.unbind("SUPER + SHIFT + RIGHT")
 hl.unbind("SUPER + SHIFT + R")
 o.bind("SUPER + GRAVE", "Omarchy menu", "omarchy menu")
 o.bind("ALT + GRAVE", "Apps menu", "omarchy-menu toggle apps")
@@ -109,3 +111,19 @@ o.bind("SUPER + SHIFT + DOWN", "Previous Herdr workspace or swap window down", f
     hl.dispatch(hl.dsp.window.swap({ direction = "d" }))
   end
 end)
+
+local function multiplexer_tab_move(arrow, action)
+  return function()
+    if active_window_is_herdr_ghostty() then
+      send_herdr_key(action)
+    elseif active_window_is_tmux_ghostty() then
+      -- Use an unbound bridge chord so the synthetic event is not recaptured here.
+      send_key_to_ghostty("SUPER CTRL SHIFT", arrow)
+    else
+      hl.dispatch(hl.dsp.window.swap({ direction = arrow:lower() }))
+    end
+  end
+end
+
+o.bind("SUPER + SHIFT + LEFT", "Previous Herdr/tmux tab or swap window left", multiplexer_tab_move("LEFT", "p"))
+o.bind("SUPER + SHIFT + RIGHT", "Next Herdr/tmux tab or swap window right", multiplexer_tab_move("RIGHT", "n"))

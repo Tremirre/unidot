@@ -30,6 +30,8 @@ source "$OMARCHY_PATH/default/bash/rc"
 
 alias vv='source .venv/bin/activate'
 alias oc='opencode --auto'
+alias lg='lazygit'
+alias ldd='lazydocker'
 
 export CUDA_HOME=/opt/cuda
 export PATH=$CUDA_HOME/bin:$PATH

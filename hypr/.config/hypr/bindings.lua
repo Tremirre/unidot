@@ -34,7 +34,8 @@ end
 local function multiplexer_pane_or_group_move(key, direction)
   return function()
     if active_window_is_herdr_ghostty() then
-      send_herdr_key(key:lower())
+      -- Forward one chord that Herdr handles directly; prefix sequencing is timing-sensitive.
+      send_key_to_ghostty("SUPER CTRL ALT", key)
     elseif active_window_is_tmux_ghostty() then
       -- Use an unbound bridge chord so the synthetic event is not recaptured here.
       send_key_to_ghostty("SUPER CTRL ALT", key)

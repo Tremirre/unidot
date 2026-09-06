@@ -35,10 +35,10 @@ close_pane = ["prefix+x", "alt+esc"]
 zoom = "prefix+z"
 last_pane = "prefix+;"
 
-focus_pane_left = ["prefix+h", "ctrl+alt+left"]
-focus_pane_down = ["prefix+j", "ctrl+alt+down"]
-focus_pane_up = ["prefix+k", "ctrl+alt+up"]
-focus_pane_right = ["prefix+l", "ctrl+alt+right"]
+focus_pane_left = ["prefix+h", "ctrl+alt+left", "super+ctrl+alt+left"]
+focus_pane_down = ["prefix+j", "ctrl+alt+down", "super+ctrl+alt+down"]
+focus_pane_up = ["prefix+k", "ctrl+alt+up", "super+ctrl+alt+up"]
+focus_pane_right = ["prefix+l", "ctrl+alt+right", "super+ctrl+alt+right"]
 
 resize_mode = [
   "prefix+ctrl+left",

@@ -1,0 +1,140 @@
+--- a/Panel.qml
++++ b/Panel.qml
+@@ -37,7 +37,13 @@
+   property double nowMs: Date.now()
+ 
+   readonly property var limits: limitWindows(provider)
+-  readonly property var models: modelRows(provider)
++  // Tokens-by-model range: "day", "week", "month" or "all". Day/Week/Month
++  // aggregate the collector's dailyModelUsage history; collectors without it
++  // (Claude, Fireworks) fall back to today totals for Day and all-time for
++  // Week/Month. "all" is always the record's modelUsage.
++  property string modelRange: "all"
++  readonly property var models: modelRows(provider, modelRange)
++  readonly property int allModelCount: modelRows(provider, "all").length
+   readonly property var headline: bindingWindow(provider)
+   readonly property var balance: provider ? (provider.balance || null) : null
+   // A prepaid account runs low the way a subscription window fills up: the
+@@ -229,8 +235,63 @@
+     return peak
+   }
+ 
+-  function modelRows(p) {
+-    var usageByModel = p ? (p.modelUsage || {}) : {}
++  function modelRangeLabel(range) {
++    if (range === "day") return "Day"
++    if (range === "week") return "Week"
++    if (range === "month") return "Month"
++    return "All"
++  }
++
++  function addDays(dateStr, delta) {
++    var parsed = new Date(String(dateStr || "") + "T00:00:00")
++    if (isNaN(parsed.getTime())) return String(dateStr || "")
++    parsed.setDate(parsed.getDate() + delta)
++    return parsed.getFullYear()
++      + "-" + String(parsed.getMonth() + 1).padStart(2, "0")
++      + "-" + String(parsed.getDate()).padStart(2, "0")
++  }
++
++  function addBucket(target, source) {
++    target.inputTokens += Number(source.inputTokens || 0)
++    target.outputTokens += Number(source.outputTokens || 0)
++    target.cacheReadInputTokens += Number(source.cacheReadInputTokens || source.cacheRead || 0)
++    target.cacheCreationInputTokens += Number(source.cacheCreationInputTokens || source.cacheWrite || 0)
++  }
++
++  function modelBuckets(p, range) {
++    if (!p) return {}
++    if (range !== "day" && range !== "week" && range !== "month") return p.modelUsage || {}
++    var history = Array.isArray(p.dailyModelUsage) ? p.dailyModelUsage : []
++    if (history.length === 0) {
++      if (range === "day") {
++        // No daily history: todayTotals carry no in/out split, so the total
++        // reads as input. The tooltip then shows the total as "In".
++        var out = {}
++        var todayTotals = p.todayTokensByModel || {}
++        for (var m in todayTotals) out[m] = { inputTokens: Number(todayTotals[m] || 0), outputTokens: 0, cacheReadInputTokens: 0, cacheCreationInputTokens: 0 }
++        return out
++      }
++      return p.modelUsage || {}
++    }
++    var today = todayDate()
++    var start = range === "day" ? today : range === "week" ? addDays(today, -6) : addDays(today, -29)
++    var acc = {}
++    for (var i = 0; i < history.length; i++) {
++      var entry = history[i] || {}
++      var date = String(entry.date || "")
++      if (date < start || date > today) continue
++      var entryModels = entry.models || {}
++      for (var id in entryModels) {
++        var bucket = acc[id]
++        if (!bucket) bucket = acc[id] = { inputTokens: 0, outputTokens: 0, cacheReadInputTokens: 0, cacheCreationInputTokens: 0 }
++        addBucket(bucket, entryModels[id] || {})
++      }
++    }
++    return acc
++  }
++
++  function modelRows(p, range) {
++    var usageByModel = modelBuckets(p, range)
+     var rows = []
+     for (var id in usageByModel) {
+       var bucket = usageByModel[id] || {}
+@@ -654,7 +715,7 @@
+ 
+           Column {
+             id: modelSection
+-            visible: root.models.length > 0
++            visible: root.models.length > 0 || root.allModelCount > 0
+             width: parent.width
+             spacing: Style.spacing.md
+ 
+@@ -665,6 +726,47 @@
+               fontFamily: root.fontFamily
+             }
+ 
++            Row {
++              id: modelRangeSwitch
++              width: parent.width
++              spacing: Style.spacing.md
++
++              readonly property var ranges: ["day", "week", "month", "all"]
++              readonly property real cellWidth: ranges.length > 0
++                ? (width - spacing * (ranges.length - 1)) / ranges.length
++                : 0
++
++              Repeater {
++                model: modelRangeSwitch.ranges
++
++                Button {
++                  required property var modelData
++                  required property int index
++
++                  width: modelRangeSwitch.cellWidth
++                  text: root.modelRangeLabel(modelData)
++                  selected: root.modelRange === modelData
++                  hasCursor: false
++                  bordered: true
++                  foreground: root.foreground
++                  fontFamily: root.fontFamily
++                  fontSize: Style.font.bodySmall
++                  verticalPadding: Style.spacing.controlPaddingY
++                  onClicked: root.modelRange = modelData
++                }
++              }
++            }
++
++            Text {
++              visible: root.models.length === 0 && root.allModelCount > 0
++              width: parent.width
++              text: "No usage in this range."
++              color: root.dim
++              font.family: root.fontFamily
++              font.pixelSize: Style.font.caption
++              horizontalAlignment: Text.AlignHCenter
++            }
++
+             Repeater {
+               model: root.models
+ 

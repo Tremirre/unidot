@@ -1,0 +1,72 @@
+--- a/Main.qml
++++ b/Main.qml
+@@ -266,6 +266,7 @@
+       totalSessions: synced ? numberValue(stats.totalSessions) : numberValue(record.totalSessions),
+       activeDays: synced ? numberValue(stats.activeDays) : numberValue(record.activeDays),
+       modelUsage: synced ? (stats.modelUsage || ({})) : (record.modelUsage || ({})),
++      dailyModelUsage: synced ? (stats.dailyModelUsage || []) : (record.dailyModelUsage || []),
+       hasLocalStats: synced ? (stats.hasLocalStats !== false) : (record.hasLocalStats !== false),
+       hasPromptStats: synced ? (stats.hasPromptStats !== false) : (record.hasPromptStats !== false),
+ 
+@@ -572,6 +573,7 @@
+         activeDays: 0,
+         activeDates: ({}),
+         modelUsage: ({}),
++        dailyModelUsage: ({}),
+         devices: ({})
+       }
+       return providers[id]
+@@ -620,6 +622,23 @@
+           if (!bucket) bucket = acc.modelUsage[modelId] = emptyTokenBucket()
+           combineObjectNumbers(additive, bucket, usage[modelId] || {})
+         }
++
++        // Daily per-model history for the Day/Week/Month model ranges. Same
++        // additive/account rule as the totals above.
++        var daily = Array.isArray(stats.dailyModelUsage) ? stats.dailyModelUsage : []
++        for (var d = 0; d < daily.length; d++) {
++          var dayEntry = daily[d] || {}
++          var dayDate = String(dayEntry.date || "")
++          if (dayDate === "") continue
++          var dayModels = dayEntry.models || {}
++          var dayAcc = acc.dailyModelUsage[dayDate]
++          if (!dayAcc) dayAcc = acc.dailyModelUsage[dayDate] = {}
++          for (var dayModelId in dayModels) {
++            var dayBucket = dayAcc[dayModelId]
++            if (!dayBucket) dayBucket = dayAcc[dayModelId] = emptyTokenBucket()
++            combineObjectNumbers(additive, dayBucket, dayModels[dayModelId] || {})
++          }
++        }
+       }
+     }
+ 
+@@ -629,6 +648,11 @@
+       var recentDays = []
+       for (var di = 0; di < dates.length; di++) recentDays.push({ date: dates[di], messageCount: acc.recentByDay[dates[di]] || 0 })
+       var providerDevices = Object.keys(acc.devices).sort()
++      var dailyDates = Object.keys(acc.dailyModelUsage).sort()
++      if (dailyDates.length > 30) dailyDates = dailyDates.slice(dailyDates.length - 30)
++      var dailyModelUsage = []
++      for (var dd = 0; dd < dailyDates.length; dd++)
++        dailyModelUsage.push({ date: dailyDates[dd], models: acc.dailyModelUsage[dailyDates[dd]] })
+       outProviders[id] = {
+         providerId: acc.providerId,
+         providerName: acc.providerName,
+@@ -644,6 +668,7 @@
+         totalSessions: acc.totalSessions,
+         activeDays: Math.max(acc.activeDays, Object.keys(acc.activeDates).length),
+         modelUsage: acc.modelUsage,
++        dailyModelUsage: dailyModelUsage,
+         deviceCount: providerDevices.length,
+         devices: providerDevices
+       }
+@@ -678,7 +703,8 @@
+       totalSessions: numberValue(record.totalSessions),
+       activeDays: numberValue(record.activeDays),
+       activeDates: cloneValue(record.activeDates, []),
+-      modelUsage: cloneValue(record.modelUsage, ({}))
++      modelUsage: cloneValue(record.modelUsage, ({})),
++      dailyModelUsage: cloneValue(record.dailyModelUsage, [])
+     }
+   }
+ 

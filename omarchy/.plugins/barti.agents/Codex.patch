@@ -1,0 +1,67 @@
+--- a/omarchy-agent-usage-codex
++++ b/omarchy-agent-usage-codex
+@@ -97,6 +97,7 @@
+ recent = {day: {"date": day, "messageCount": 0} for day in recent_dates}
+ today_tokens_by_model = {}
+ model_usage = {}
++daily_model_usage = {}
+ today_sessions = set()
+ active_days = set()
+ 
+@@ -125,6 +126,17 @@
+   bucket["cacheReadInputTokens"] += cache_read
+   bucket["cacheCreationInputTokens"] += cache_write
+ 
++  day_bucket = daily_model_usage.setdefault((day, model), {
++    "inputTokens": 0,
++    "outputTokens": 0,
++    "cacheReadInputTokens": 0,
++    "cacheCreationInputTokens": 0,
++  })
++  day_bucket["inputTokens"] += input_tokens
++  day_bucket["outputTokens"] += output_tokens
++  day_bucket["cacheReadInputTokens"] += cache_read
++  day_bucket["cacheCreationInputTokens"] += cache_write
++
+   if day in recent:
+     recent[day]["messageCount"] += total
+ 
+@@ -401,7 +413,7 @@
+   stats = cached.get("stats")
+   if not isinstance(stats, dict):
+     return None
+-  if not all(key in stats for key in ("todayPrompts", "todayTotalTokens", "recentDays", "activeDates", "modelUsage")):
++  if not all(key in stats for key in ("todayPrompts", "todayTotalTokens", "recentDays", "activeDates", "modelUsage", "dailyModelUsage")):
+     return None
+   return stats
+ 
+@@ -413,6 +425,21 @@
+     print(f"omarchy-agent-usage-codex: could not write usage cache ({exc})", file=sys.stderr)
+ 
+ 
++def daily_model_history(days=30):
++  """Per-day per-model token buckets for the model range switch.
++
++  Only the last `days` days travel in the record; the all-time modelUsage
++  above stays untouched. Days compare as YYYY-MM-DD strings.
++  """
++  cutoff = (now - timedelta(days=days - 1)).strftime("%Y-%m-%d")
++  by_day = {}
++  for (day, model), bucket in daily_model_usage.items():
++    if day < cutoff:
++      continue
++    by_day.setdefault(day, {})[model] = bucket
++  return [{"date": day, "models": by_day[day]} for day in sorted(by_day)]
++
++
+ def local_stats():
+   """Snapshot the aggregated local usage into the record's stats dict."""
+   return {
+@@ -429,6 +456,7 @@
+     "activeDays": len(active_days),
+     "activeDates": sorted(active_days),
+     "modelUsage": model_usage,
++    "dailyModelUsage": daily_model_history(),
+   }
+ 
+ 

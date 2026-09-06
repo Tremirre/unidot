@@ -1,0 +1,264 @@
+#!/usr/bin/python3
+# omarchy:summary=Print the Opencode Zen usage record as JSON
+# omarchy:args=[--force] [--limits-only]
+# omarchy:hidden=true
+"""Collect Opencode Zen/Go usage into one display-ready JSON record.
+
+Scans opencode's own database for assistant messages whose providerID is
+exactly "opencode" or "opencode-go" (Zen). GPT usage via providerID "openai"
+stays in the Codex tab via omarchy-agent-usage-codex; this collector never
+touches it. The agents panel only ever reads the JSON this prints.
+"""
+
+import argparse
+import json
+import sqlite3
+import urllib.request
+import urllib.error
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+AGENT_ID = "opencode"
+AGENT_NAME = "Opencode"
+TIER_LABEL = "Zen"
+
+WANTED_PROVIDERS = {"opencode", "opencode-go"}
+
+# Official Go plan usage endpoint (same data as the Zen workspace dashboard):
+# rolling (5h) + weekly + monthly windows with percent (0-100) and resetsAt.
+GO_USAGE_URL = "https://opencode.ai/zen/go/v1/usage"
+# Cloudflare rejects the default urllib user-agent (error 1010).
+GO_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
+
+
+def number(value):
+  try:
+    return int(value or 0)
+  except Exception:
+    return 0
+
+
+def local_day(value):
+  if value is None:
+    return datetime.now().strftime("%Y-%m-%d")
+  if isinstance(value, (int, float)):
+    if value > 10_000_000_000:
+      value = value / 1000
+    return datetime.fromtimestamp(value).strftime("%Y-%m-%d")
+  text = str(value)
+  try:
+    if text.endswith("Z"):
+      dt = datetime.fromisoformat(text[:-1] + "+00:00")
+    else:
+      dt = datetime.fromisoformat(text)
+    if dt.tzinfo is not None:
+      dt = dt.astimezone()
+    return dt.strftime("%Y-%m-%d")
+  except Exception:
+    return datetime.now().strftime("%Y-%m-%d")
+
+
+def model_name(raw):
+  value = str(raw or "opencode").rstrip("/").split("/")[-1]
+  return value if value else "opencode"
+
+
+def go_api_keys():
+  """Candidate API keys for the Go usage endpoint, best first.
+
+  Mirrors the fireworks collector: opencode's auth.json first, so a key
+  rotation in the TUI is picked up without touching this collector.
+  """
+  import os
+  auth_path = Path(os.environ.get("XDG_DATA_HOME") or (Path.home() / ".local" / "share")) / "opencode" / "auth.json"
+  try:
+    auth = json.loads(auth_path.read_text())
+  except Exception:
+    return []
+  keys = []
+  for provider_id in ("opencode-go", "opencode"):
+    try:
+      key = (auth.get(provider_id) or {}).get("key")
+    except Exception:
+      key = None
+    if key and key not in keys:
+      keys.append(str(key))
+  return keys
+
+
+def fetch_go_limits():
+  """Go plan rate-limit windows in the panel's record shape.
+
+  Local token stats keep working when this fails; the tab just shows no
+  LIMITS section, exactly like the Codex tab without `codex login`.
+  """
+  result = {"limits": [], "tierLabel": TIER_LABEL, "usageStatusText": "", "authHelpText": ""}
+  keys = go_api_keys()
+  if not keys:
+    result["usageStatusText"] = "Go limits unavailable"
+    result["authHelpText"] = "No opencode API key in auth.json"
+    return result
+  last_error = "unknown error"
+  for key in keys:
+    try:
+      req = urllib.request.Request(GO_USAGE_URL, headers={
+        "Authorization": "Bearer " + key,
+        "User-Agent": GO_USER_AGENT,
+        "Accept": "application/json",
+      })
+      with urllib.request.urlopen(req, timeout=10) as resp:
+        payload = json.loads(resp.read().decode())
+      usage = payload.get("usage") or {}
+      for label, window in (("5h window", usage.get("rolling")),
+                            ("Weekly (7-day)", usage.get("weekly")),
+                            ("Monthly (30-day)", usage.get("monthly"))):
+        if not isinstance(window, dict):
+          continue
+        try:
+          percent = float(window.get("percent"))
+        except (TypeError, ValueError):
+          continue
+        if percent > 1:
+          percent = percent / 100.0
+        if percent < 0:
+          continue
+        result["limits"].append({
+          "label": label,
+          "percent": percent,
+          "resetsAt": str(window.get("resetsAt") or ""),
+        })
+      if result["limits"]:
+        result["tierLabel"] = "Go"
+        return result
+      last_error = "empty usage response"
+    except Exception as exc:
+      # Never echo the key: it only travels in the request header.
+      last_error = str(exc)[:200] if str(exc) else type(exc).__name__
+  result["usageStatusText"] = "Go limits unavailable"
+  result["authHelpText"] = last_error
+  return result
+
+
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument("--force", action="store_true")
+  parser.add_argument("--limits-only", action="store_true")
+  parser.parse_args()
+
+  now = datetime.now()
+  today = now.strftime("%Y-%m-%d")
+  recent_dates = [(now - timedelta(days=offset)).strftime("%Y-%m-%d") for offset in range(6, -1, -1)]
+  recent = {day: 0 for day in recent_dates}
+  today_tokens_by_model = {}
+  model_usage = {}
+  daily_model_usage = {}
+  today_sessions = set()
+  total_sessions = set()
+  active_days = set()
+  today_prompts = 0
+  today_total_tokens = 0
+  total_prompts = 0
+
+  import os
+  db = Path(os.environ.get("XDG_DATA_HOME") or (Path.home() / ".local" / "share")) / "opencode" / "opencode.db"
+  if db.is_file():
+    try:
+      conn = sqlite3.connect(db.resolve().as_uri() + "?mode=ro", uri=True, timeout=2)
+    except sqlite3.Error:
+      conn = None
+    if conn is not None:
+      try:
+        conn.execute("PRAGMA query_only = ON")
+        rows = conn.execute(
+          "SELECT session_id, data FROM message"
+          " WHERE data LIKE '%\"role\"%:%\"assistant\"%'"
+          " AND (data LIKE '%\"providerID\"%:%\"opencode\"%'"
+          " OR data LIKE '%\"providerID\"%:%\"opencode-go\"%')"
+          " AND CASE WHEN json_valid(data) THEN json_extract(data, '$.role') END = 'assistant'"
+        )
+        for session_id, raw in rows:
+          try:
+            entry = json.loads(raw)
+            if not isinstance(entry, dict) or entry.get("role") != "assistant":
+              continue
+            if str(entry.get("providerID") or "") not in WANTED_PROVIDERS:
+              continue
+            tokens = entry.get("tokens") or {}
+            cache = tokens.get("cache") or {}
+            input_tokens = number(tokens.get("input"))
+            output_tokens = number(tokens.get("output")) + number(tokens.get("reasoning"))
+            cache_read = number(cache.get("read"))
+            cache_write = number(cache.get("write"))
+            total = input_tokens + output_tokens + cache_read + cache_write
+            if total <= 0:
+              continue
+            day = local_day((entry.get("time") or {}).get("created"))
+            model = model_name(entry.get("modelID"))
+          except Exception:
+            continue
+          session_key = "opencode:" + str(session_id)
+          total_prompts += 1
+          total_sessions.add(session_key)
+          active_days.add(day)
+          bucket = model_usage.setdefault(model, {
+            "inputTokens": 0, "outputTokens": 0,
+            "cacheReadInputTokens": 0, "cacheCreationInputTokens": 0,
+          })
+          bucket["inputTokens"] += input_tokens
+          bucket["outputTokens"] += output_tokens
+          bucket["cacheReadInputTokens"] += cache_read
+          bucket["cacheCreationInputTokens"] += cache_write
+          day_bucket = daily_model_usage.setdefault((day, model), {
+            "inputTokens": 0, "outputTokens": 0,
+            "cacheReadInputTokens": 0, "cacheCreationInputTokens": 0,
+          })
+          day_bucket["inputTokens"] += input_tokens
+          day_bucket["outputTokens"] += output_tokens
+          day_bucket["cacheReadInputTokens"] += cache_read
+          day_bucket["cacheCreationInputTokens"] += cache_write
+          if day in recent:
+            recent[day] += total
+          if day == today:
+            today_prompts += 1
+            today_sessions.add(session_key)
+            today_total_tokens += total
+            today_tokens_by_model[model] = today_tokens_by_model.get(model, 0) + total
+      except sqlite3.Error:
+        pass
+      finally:
+        conn.close()
+
+  cutoff = (now - timedelta(days=29)).strftime("%Y-%m-%d")
+  daily_by_day = {}
+  for (day, model), bucket in daily_model_usage.items():
+    if day < cutoff:
+      continue
+    daily_by_day.setdefault(day, {})[model] = bucket
+  daily_history = [{"date": day, "models": daily_by_day[day]} for day in sorted(daily_by_day)]
+
+  record = {
+    "schemaVersion": 1,
+    "id": AGENT_ID,
+    "name": AGENT_NAME,
+    "updatedAt": datetime.now(timezone.utc).isoformat(),
+    "ready": True,
+    "hasLocalStats": True,
+    "hasPromptStats": True,
+    "todayPrompts": today_prompts,
+    "todaySessions": len(today_sessions),
+    "todayTotalTokens": today_total_tokens,
+    "todayTokensByModel": today_tokens_by_model,
+    "recentDays": [{"date": d, "messageCount": recent[d]} for d in recent_dates],
+    "totalPrompts": total_prompts,
+    "totalSessions": len(total_sessions),
+    "activeDays": len(active_days),
+    "activeDates": sorted(active_days),
+    "modelUsage": model_usage,
+    "dailyModelUsage": daily_history,
+  }
+  record.update(fetch_go_limits())
+  print(json.dumps(record, separators=(",", ":")))
+
+
+if __name__ == "__main__":
+  main()

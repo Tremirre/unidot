@@ -45,7 +45,7 @@
           "id": "barti.system-stats"
         },
         {
-          "id": "omarchy.agents"
+          "id": "barti.agents"
         },
         {
           "id": "omarchy.bluetooth"
@@ -82,6 +82,7 @@
   "cloneSourceRestores": [
     "barti.menu",
     "barti.notifications",
-    "barti.lock"
+    "barti.lock",
+    "barti.agents"
   ]
 }
